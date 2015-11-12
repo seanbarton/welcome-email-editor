@@ -3,7 +3,7 @@
 Plugin Name: SB Welcome Email Editor
 Plugin URI: http://www.sean-barton.co.uk
 Description: Allows you to change the content, layout and even add an attachment for many of the inbuilt Wordpress emails. Simple!
-Version: 4.7
+Version: 4.7.1
 Author: Sean Barton
 Author URI: http://www.sean-barton.co.uk
 Text Domain: sb-we
@@ -120,7 +120,7 @@ function sb_we_lost_password_title($content) {
 	return $content;
 }
 
-function sb_we_lost_password_message($message, $key, $user_login, $user_data) {
+function sb_we_lost_password_message($message, $key, $user_login) {
 	global $wpdb;
 	
 	if (is_int($user_login)) {
@@ -137,7 +137,7 @@ function sb_we_lost_password_message($message, $key, $user_login, $user_data) {
 		else $blogname = esc_html(get_option('blogname'), ENT_QUOTES);
 		
 		//$reset_url = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login');
-		$reset_url = trailingslashit(wp_login_url()) . "?action=rp&key=$key&login=" . rawurlencode($user_login);
+		$reset_url = trailingslashit(wp_login_url()) . '?action=rp&key=' . $key . '&login=' . rawurlencode($user_login);
 		
 		$message = $settings->password_reminder_body; //'Someone requested that the password be reset for the following account: [site_url]' . "\n\n" . 'Username: [user_login]' . "\n\n" . 'If this was a mistake, just ignore this email and nothing will happen.' . "\n\n" . 'To reset your password, visit the following address: [reset_url]';
 
@@ -370,6 +370,7 @@ if (!function_exists('wp_new_user_notification')) {
 				$admin_message = str_replace('[site_url]', $sb_we_home, $admin_message);
 				//$admin_message = str_replace('[login_url]', $sb_we_home . 'wp-login.php', $admin_message);
 				$admin_message = str_replace('[login_url]', trailingslashit(wp_login_url()), $admin_message);
+				$admin_message = str_replace('[reset_pass_url]', $reset_pass_url, $admin_message);
 				$admin_message = str_replace('[user_email]', $user_email, $admin_message);
 				$admin_message = str_replace('[user_login]', $user_login, $admin_message);
 				$admin_message = str_replace('[first_name]', $first_name, $admin_message);
@@ -398,8 +399,17 @@ if (!function_exists('wp_new_user_notification')) {
 				$admin_subject = str_replace('[date]', $date, $admin_subject);
 				$admin_subject = str_replace('[time]', $time, $admin_subject);
 				
-				$admin_message = apply_filters('sb_we_email_admin_message', $admin_message, $settings);
-				$admin_subject = apply_filters('sb_we_email_admin_subject', $admin_subject, $settings);
+				$admin_message_replace = apply_filters('sb_we_replace_array', array(), $user_id, $settings);
+				
+				if ($admin_message_replace) {
+					foreach ($admin_message_replace as $hook=>$replace) {
+						$admin_message = str_replace('[' . $hook . ']', $replace, $admin_message);
+						$admin_subject = str_replace('[' . $hook . ']', $replace, $admin_subject);
+					}
+				}
+				
+				$admin_message = apply_filters('sb_we_email_admin_message', $admin_message, $settings, $user_id);
+				$admin_subject = apply_filters('sb_we_email_admin_subject', $admin_subject, $settings, $user_id);
 				
 				$admins = apply_filters('sb_we_email_admins', $admins);
 				
@@ -431,7 +441,7 @@ if (!function_exists('wp_new_user_notification')) {
 					$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
 					$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user->user_login ) );
 					
-					$login_url = $reset_pass_url = trailingslashit(wp_login_url()) . '?action=rp&key=$key&login=' . rawurlencode($user->user_login);
+					$login_url = $reset_pass_url = trailingslashit(wp_login_url()) . '?action=rp&key=' . $key . '&login=' . rawurlencode($user->user_login);
 					//$login_url = $reset_pass_url = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user->user_login), 'login');
 					//$login_url = network_site_url("wp-login.php?action=rp", 'login');
 				}
@@ -451,7 +461,7 @@ if (!function_exists('wp_new_user_notification')) {
 				$user_message = str_replace('[blog_name]', $blog_name, $user_message);
 				$user_message = str_replace('[date]', $date, $user_message);
 				$user_message = str_replace('[time]', $time, $user_message);
-
+				
 				$user_subject = str_replace('[blog_name]', $blog_name, $user_subject);
 				$user_subject = str_replace('[site_url]', $sb_we_home, $user_subject);
 				$user_subject = str_replace('[user_email]', $user_email, $user_subject);
@@ -462,8 +472,17 @@ if (!function_exists('wp_new_user_notification')) {
 				$user_subject = str_replace('[date]', $date, $user_subject);
 				$user_subject = str_replace('[time]', $time, $user_subject);
 				
-				$user_subject = apply_filters('sb_we_email_subject', $user_subject, $settings);
-				$user_message = apply_filters('sb_we_email_message', $user_message, $settings);
+				$user_message_replace = apply_filters('sb_we_replace_array', array(), $user_id, $settings);
+				
+				if ($user_message_replace) {
+					foreach ($user_message_replace as $hook=>$replace) {
+						$user_message = str_replace('[' . $hook . ']', $replace, $user_message);
+						$user_subject = str_replace('[' . $hook . ']', $replace, $user_subject);
+					}
+				}
+				
+				$user_subject = apply_filters('sb_we_email_subject', $user_subject, $settings, $user_id);
+				$user_message = apply_filters('sb_we_email_message', $user_message, $settings, $user_id);
 				
 				$attachment = false;
 				if (trim($settings->we_attachment_url)) {
