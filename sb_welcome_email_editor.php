@@ -3,7 +3,7 @@
 Plugin Name: SB Welcome Email Editor
 Plugin URI: http://www.sean-barton.co.uk
 Description: Allows you to change the content, layout and even add an attachment for many of the inbuilt Wordpress emails. Simple!
-Version: 4.7.1
+Version: 4.7.2
 Author: Sean Barton
 Author URI: http://www.sean-barton.co.uk
 Text Domain: sb-we
@@ -137,7 +137,7 @@ function sb_we_lost_password_message($message, $key, $user_login) {
 		else $blogname = esc_html(get_option('blogname'), ENT_QUOTES);
 		
 		//$reset_url = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login');
-		$reset_url = trailingslashit(wp_login_url()) . '?action=rp&key=' . $key . '&login=' . rawurlencode($user_login);
+		$reset_url = wp_login_url() . '?action=rp&key=' . $key . '&login=' . rawurlencode($user_login);
 		
 		$message = $settings->password_reminder_body; //'Someone requested that the password be reset for the following account: [site_url]' . "\n\n" . 'Username: [user_login]' . "\n\n" . 'If this was a mistake, just ignore this email and nothing will happen.' . "\n\n" . 'To reset your password, visit the following address: [reset_url]';
 
@@ -369,7 +369,7 @@ if (!function_exists('wp_new_user_notification')) {
 				$admin_message = str_replace('[admin_email]', $admin_email, $admin_message);
 				$admin_message = str_replace('[site_url]', $sb_we_home, $admin_message);
 				//$admin_message = str_replace('[login_url]', $sb_we_home . 'wp-login.php', $admin_message);
-				$admin_message = str_replace('[login_url]', trailingslashit(wp_login_url()), $admin_message);
+				$admin_message = str_replace('[login_url]', wp_login_url(), $admin_message);
 				$admin_message = str_replace('[reset_pass_url]', $reset_pass_url, $admin_message);
 				$admin_message = str_replace('[user_email]', $user_email, $admin_message);
 				$admin_message = str_replace('[user_login]', $user_login, $admin_message);
@@ -423,7 +423,7 @@ if (!function_exists('wp_new_user_notification')) {
 			if ($notify && $notify != 'admin') { //needs to be like this for backwards compatibility
 				
 				//$login_url = $reset_pass_url = $sb_we_home . 'wp-login.php';
-				$login_url = $reset_pass_url = trailingslashit(wp_login_url());
+				$login_url = $reset_pass_url = wp_login_url();
 				
 				if (version_compare(get_bloginfo( 'version' ), '4.3') >= 0) {
 					//set the password hash and generate a link to go and set it rather than sending it to them in plaintext
@@ -441,7 +441,7 @@ if (!function_exists('wp_new_user_notification')) {
 					$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
 					$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user->user_login ) );
 					
-					$login_url = $reset_pass_url = trailingslashit(wp_login_url()) . '?action=rp&key=' . $key . '&login=' . rawurlencode($user->user_login);
+					$login_url = $reset_pass_url = wp_login_url() . '?action=rp&key=' . $key . '&login=' . rawurlencode($user->user_login);
 					//$login_url = $reset_pass_url = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user->user_login), 'login');
 					//$login_url = network_site_url("wp-login.php?action=rp", 'login');
 				}

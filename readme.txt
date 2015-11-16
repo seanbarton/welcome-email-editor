@@ -104,6 +104,8 @@ V4.7 - 12/11/15 - Changed the login URLs to use wp_login_url() instead of hard c
 
 V4.7.1 - 12/11/15 - Fixed a typo in wp_login_url() replacements from the last version... sorry!
 
+V4.7.2 - 16/11/15 - Fixed issue with wp_login_url containing a trailingslashit wrapper which was causing problems
+
 == Installation ==
 
 1. Upload the contents of the ZIP file to the `/wp-content/plugins/` directory
