@@ -33,6 +33,7 @@ I am looking for people to translate the plugin. The plugin is PO/MO file compat
 
 - English
 - Italian
+- French
 
 == Changelog ==
 
@@ -105,6 +106,8 @@ V4.7 - 12/11/15 - Changed the login URLs to use wp_login_url() instead of hard c
 V4.7.1 - 12/11/15 - Fixed a typo in wp_login_url() replacements from the last version... sorry!
 
 V4.7.2 - 16/11/15 - Fixed issue with wp_login_url containing a trailingslashit wrapper which was causing problems
+
+V4.8 - 17/11/15 - Added French Translation. Thanks to Robin Calmejane (ertho.fr) for his contribution
 
 == Installation ==
 

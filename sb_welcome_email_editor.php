@@ -3,7 +3,7 @@
 Plugin Name: SB Welcome Email Editor
 Plugin URI: http://www.sean-barton.co.uk
 Description: Allows you to change the content, layout and even add an attachment for many of the inbuilt Wordpress emails. Simple!
-Version: 4.7.2
+Version: 4.8
 Author: Sean Barton
 Author URI: http://www.sean-barton.co.uk
 Text Domain: sb-we
