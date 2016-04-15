@@ -278,7 +278,7 @@ if (!function_exists('wp_new_user_notification')) {
 			sb_we_set_email_filter_headers();
 		}
 
-		if ($user = new WP_User($user_id)) {
+		if ($user = new WP_User($user_id) && !is_wp_error($user_id)) {
 			$settings = get_option('sb_we_settings');
 
 			update_user_meta($user_id, 'sb_we_last_sent', time());
