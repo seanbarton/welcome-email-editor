@@ -127,6 +127,7 @@ function sb_we_lost_password_message($message, $key, $user_login) {
 		$user_info = get_user_by('id', $user_login);
 		$user_login = $user_info->user_login;
 	}
+	$user_id = $user_info;
 
 	$settings = get_option('sb_we_settings');
 
