@@ -109,20 +109,24 @@ function sb_we_lost_password_title($content) {
 
 	if ($settings->password_reminder_subject) {
 		sb_we_set_email_filter_headers(); //to set content type etc.
-		
+
 		if ( is_multisite() ) $blogname = $GLOBALS['current_site']->site_name;
 		else $blogname = esc_html(get_option('blogname'), ENT_QUOTES);
 
 		$content = $settings->password_reminder_subject;
 		$content = str_replace('[blog_name]', $blogname, $content);
 	}
+	$content = apply_filters('sb_we_email_reset_subject', $content, $settings);
 
 	return $content;
 }
 
+
+//FINDME User lost password
+
 function sb_we_lost_password_message($message, $key, $user_login) {
 	global $wpdb;
-	
+
 	if (is_int($user_login)) {
 		$user_info = get_user_by('id', $user_login);
 		$user_login = $user_info->user_login;
@@ -136,17 +140,21 @@ function sb_we_lost_password_message($message, $key, $user_login) {
 
 		if ( is_multisite() ) $blogname = $GLOBALS['current_site']->site_name;
 		else $blogname = esc_html(get_option('blogname'), ENT_QUOTES);
-		
+
 		//$reset_url = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login');
 		$reset_url = wp_login_url() . '?action=rp&key=' . $key . '&login=' . rawurlencode($user_login);
-		
+
 		$message = $settings->password_reminder_body; //'Someone requested that the password be reset for the following account: [site_url]' . "\n\n" . 'Username: [user_login]' . "\n\n" . 'If this was a mistake, just ignore this email and nothing will happen.' . "\n\n" . 'To reset your password, visit the following address: [reset_url]';
 
 		$message = str_replace('[user_login]', $user_login, $message);
 		$message = str_replace('[blog_name]', $blogname, $message);
 		$message = str_replace('[site_url]', $site_url, $message);
 		$message = str_replace('[reset_url]', $reset_url, $message);
+
+
 	}
+
+	$message = apply_filters('sb_we_email_reset_message', $message, $settings, $user_id);
 
 	return $message;
 }
