@@ -420,7 +420,7 @@ if (!function_exists('wp_new_user_notification')) {
 				}
 			}
 
-			if ($notify && $notify != 'admin') { //needs to be like this for backwards compatibility
+			if ( empty( $notify ) || $notify != 'admin') { //needs to be like this for backwards compatibility
 				
 				//$login_url = $reset_pass_url = $sb_we_home . 'wp-login.php';
 				$login_url = $reset_pass_url = wp_login_url();
