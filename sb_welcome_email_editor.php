@@ -137,7 +137,7 @@ function sb_we_lost_password_message($message, $key, $user_login) {
 		else $blogname = esc_html(get_option('blogname'), ENT_QUOTES);
 		
 		//$reset_url = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login');
-		$reset_url = wp_login_url() . '?action=rp&key=' . $key . '&login=' . rawurlencode($user_login);
+		$reset_url = wp_lostpassword_url() . '?action=rp&key=' . $key . '&login=' . rawurlencode($user_login);
 		
 		$message = $settings->password_reminder_body; //'Someone requested that the password be reset for the following account: [site_url]' . "\n\n" . 'Username: [user_login]' . "\n\n" . 'If this was a mistake, just ignore this email and nothing will happen.' . "\n\n" . 'To reset your password, visit the following address: [reset_url]';
 
