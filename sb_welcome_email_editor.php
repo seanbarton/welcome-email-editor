@@ -909,7 +909,7 @@ function sb_we_get_superglobal($array, $key, $default='', $escape=false, $strip_
 		$default = $array[$key];
 
 		if ($escape) {
-			$default = mysql_real_escape_string($default);
+			$default = mysqli_real_escape_string($default);
 		}
 
 		if ($strip_tags) {
